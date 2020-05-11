@@ -1,14 +1,19 @@
+from typing import List, Optional, Dict, Any, Dict
+
+from rentomatic.shared.domain_model import DomainModel
+from rentomatic.shared.storageropm_repo import StorageRoomRepo
 from rentomatic.domain import storageroom as sr
 
+StorageDict = Dict[str, Any]
 
-class MemRepo:
+class MemRepo(StorageRoomRepo):
 
-    def __init__(self, entries=None):
-        self._entries = []
+    def __init__(self, entries: Optional[List[StorageDict]] = None) -> None:
+        self._entries: List[StorageDict] = []
         if entries:
             self._entries.extend(entries)
 
-    def _check(self, element, key, value):
+    def _check(self, element: StorageDict, key: str, value: Any) -> bool:
         if '__' not in key:
             key = key + '__eq'
 
@@ -26,7 +31,7 @@ class MemRepo:
 
         return getattr(element[key], operator)(value)
 
-    def list(self, filters=None):
+    def list(self, filters: Optional[dict] = None) -> List[sr.StorageRoom]:
         if not filters:
             result = self._entries
         else:
